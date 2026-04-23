@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ScratchおたすけAI</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="./scratch_logo.png" alt="Scratch" />
+        <div>
+          <p class="eyebrow">Scratch Checker</p>
+          <h1>ScratchおたすけAI</h1>
+        </div>
+      </div>
+
+      <label class="upload-box" for="fileInput">
+        <span class="upload-icon">↑</span>
+        <strong>.sb3ファイルを選択</strong>
+        <small>Scratchの作品ファイルをここから読み込みます</small>
+      </label>
+      <input id="fileInput" type="file" accept=".sb3" />
+
+      <div class="side-panel">
+        <label for="audience">AIコメントの対象</label>
+        <select id="audience">
+          <option>小学校低学年（1〜2年生）</option>
+          <option>小学校中学年（3〜4年生）</option>
+          <option selected>小学校高学年（5〜6年生）</option>
+          <option>中学生以上</option>
+        </select>
+      </div>
+
+      <p class="note">
+        解析はブラウザ内で行います。AI用の文章は生成できますが、APIキーはこの静的版では保存しません。
+      </p>
+    </aside>
+
+    <main class="app-shell">
+      <section class="intro" id="emptyState">
+        <div>
+          <p class="eyebrow">Upload a Scratch project</p>
+          <h2>Scratch作品の構造を、すぐに見える形へ。</h2>
+          <p>
+            ブロック数、未使用変数、メッセージ送受信の不一致、全角文字の混入をチェックします。
+          </p>
+        </div>
+      </section>
+
+      <section class="workspace hidden" id="workspace">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow" id="fileName">Project</p>
+            <h2>分析レポート</h2>
+          </div>
+          <button class="copy-prompt-button" type="button" title="AI用プロンプトをコピー">コピー</button>
+        </header>
+
+        <nav class="tabs" aria-label="表示切り替え">
+          <button class="tab active" data-tab="overview" type="button">分析概要</button>
+          <button class="tab" data-tab="checks" type="button">チェック</button>
+          <button class="tab" data-tab="teacher" type="button">AI先生</button>
+        </nav>
+
+        <section class="tab-panel active" id="overview">
+          <div class="metrics" id="metrics"></div>
+          <div class="grid-two">
+            <section class="panel">
+              <h3>ブロック数の分布</h3>
+              <div class="bar-list" id="blockBars"></div>
+            </section>
+            <section class="panel">
+              <h3>スプライト別データ</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>スプライト</th>
+                      <th>ブロック</th>
+                      <th>割合</th>
+                      <th>未使用変数</th>
+                    </tr>
+                  </thead>
+                  <tbody id="spriteTable"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="checks">
+          <div class="grid-two">
+            <section class="panel">
+              <h3>メッセージ送受信</h3>
+              <div id="messageChecks"></div>
+            </section>
+            <section class="panel">
+              <h3>全角英数字・記号</h3>
+              <div id="fullwidthChecks"></div>
+            </section>
+          </div>
+          <section class="panel">
+            <h3>未使用変数</h3>
+            <div id="variableChecks" class="card-list"></div>
+          </section>
+        </section>
+
+        <section class="tab-panel" id="teacher">
+          <section class="panel">
+            <h3>AIに送る解析データ</h3>
+            <pre id="summaryText"></pre>
+          </section>
+          <section class="panel">
+            <div class="panel-heading">
+              <h3>AI先生へのプロンプト</h3>
+              <button class="copy-prompt-button" type="button" title="AI先生へのプロンプトをコピー">
+                プロンプトをコピー
+              </button>
+            </div>
+            <textarea id="promptText" rows="16" readonly></textarea>
+          </section>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
